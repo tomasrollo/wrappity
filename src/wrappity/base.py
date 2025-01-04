@@ -86,7 +86,17 @@ class Wrapper(object):
 		return str(self._wrapped_object) if self._wrapped_object is not None else ""
 
 
-def wrap(object_, attr_translations: dict = {}, missed_access_hook=None):
+def wrap(object_: Any, attr_translations: dict = {}, missed_access_hook: Callable = None) -> Wrapper:
+	"""Wraps an object in a Wrapper instance, proceeding recursively if necessary
+
+	Args:
+			object_ (Any): the object to wrap
+			attr_translations (dict, optional): Any attribute name translations required to access subobjects which have names that are not valid names in Python.
+			missed_access_hook (Callable, optional): An optional function that gets called when there's a attempt to access a subobject that does not exist.
+
+	Returns:
+			Wrapper: the original object wrapped in a Wrapper instance
+	"""
 	if type(object_) == dict:
 		return Wrapper(
 			{
@@ -110,7 +120,15 @@ def wrap(object_, attr_translations: dict = {}, missed_access_hook=None):
 		)
 
 
-def unwrap(object_):
+def unwrap(object_: Wrapper) -> Any:
+	"""Unwraps a previously wrapped object, proceeding recursively if necessary
+
+	Args:
+			object_ (Wrapper): the wrapped object to unwrap
+
+	Returns:
+			Any: the unwrapped object
+	"""
 	if type(object_) != Wrapper:
 		return object_  # nothing to unwrap
 	if type(object_._wrapped_object) == dict:
@@ -122,6 +140,14 @@ def unwrap(object_):
 
 
 def inspect(object_: Wrapper) -> list[str]:
+	"""Inspects the wrapped object (recursively if needed) and returns a list of paths to all leaf nodes
+
+	Args:
+		object_ (Wrapper): a wrapped object
+
+	Returns:
+		list[str]: list of paths to all leaf nodes
+	"""
 	def find_paths(object_, current_path=None):
 		if current_path is None:
 			current_path = []
