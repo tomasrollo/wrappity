@@ -1,12 +1,13 @@
 # Wrappity
 
 _Wrappity is a Python package for easier access to deeply nested dictionaries._
+
 _Pure Python, no dependencies, lightweight (200 LOC)._
 
 ## What does it do
 
 Wrappity allows you to access deeply nested dictionaries and combinations of `dicts` and `lists` using simple attribute 'dot' notation.
-It is especially useful when your input are volatile json structures that changing during runtime.
+It is especially useful when your input are volatile json structures where you can't enforce uniformity.
 
 Instead of...
 ```python
@@ -38,8 +39,10 @@ This allows (more elegant) constructs like this:
 ```python
 value = wrapped_dict.foo[3].bar[5].baz.this_is_what_I_want._ or "my default value"
 print(value)
-'my default value' # in case any of the foo, bar, baz are not there
+'my default value' # in case any of the foo, bar or baz are not there
 ```
+
+To learn more about why Wrappity was created and what use cases it's good for see [here](docs/why.md).
 
 ## Installation
 
