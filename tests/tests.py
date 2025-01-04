@@ -1,0 +1,35 @@
+from wrappity import wrap, unwrap, inspect, Wrapper
+
+test_obj = {"a": 1, "b": [1, 2, 3], "c": {"d": 4}}
+wrapped_obj = wrap(test_obj)
+
+def test_wrap_unwrap():
+	# test wrapping and unwrapping
+	assert isinstance(wrapped_obj, Wrapper)
+	unwrapped_obj = unwrap(wrapped_obj)
+	assert test_obj == unwrapped_obj
+
+def test_inspect():
+	# test inspecting
+	paths = inspect(wrapped_obj)
+	assert paths == ["a=1", "b[0]=1", "b[1]=2", "b[2]=3", "c.d=4"]
+
+def test_underscore_access():
+	# test underscore access
+	assert wrapped_obj.a._ == 1
+	assert wrapped_obj.b[1]._ == 2
+	assert wrapped_obj.c.d._ == 4
+
+def test_access_miss():
+	# test access miss
+	assert bool(wrapped_obj.e) is False
+	assert wrapped_obj.e._ is None
+
+def test_missed_access_hook():
+	# test missed access hook
+	def missed_access_callable(object_, what, access_type):
+		assert object_ == wrapped_obj
+		assert what == "e"
+		assert access_type == Wrapper.ACCESS_TYPE_DICT
+	wrapped_obj = wrap(test_obj, missed_access_hook=missed_access_callable)
+	wrapped_obj.e
