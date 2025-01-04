@@ -6,8 +6,18 @@ readme = "README.md"
 authors = [
     { name = "Tomas Rollo", email = "tomas.rollo@gmail.com" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = []
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/tomasrollo/wrappity"
+Issues = "https://github.com/tomasrollo/wrappity/issues"
 
 [project.scripts]
 wrappity = "wrappity:main"
