@@ -8,7 +8,7 @@ Json data has become a de-facto standard for sharing all kinds of structures ove
 
 This means that we can less rely on knowing which combinations (or ommisions) of data we can encounter when processing such data - what kind of variants we can - or would not need to - expect.
 
-As a result we are forced into defensive coding where without knowing the schema of the document we're processing we better check every single part of the path we're accessing to avoid unexpected Exceptions (everyone loves getting `KeyErrors` and `IndexErrors` for yet another part you forgot to check).
+As a result we are forced into defensive coding where without knowing the schema of the document we're processing we better check every single part of the path we're accessing to avoid unexpected Exceptions (_everyone loves getting `KeyErrors` and `IndexErrors` for yet another part you forgot to check_).
 
 It's proper, it's robust and we should do that - but it's also tedious, boilerplatey and makes the code less readable (_esp. if you're only a mediocre coder like I am_).
 
