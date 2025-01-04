@@ -1,6 +1,6 @@
 [project]
 name = "wrappity"
-version = "0.1.0"
+version = "0.1.1"
 description = "A package for easier access to deeply nested dictionaries."
 readme = "README.md"
 authors = [
