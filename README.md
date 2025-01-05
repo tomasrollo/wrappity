@@ -7,7 +7,7 @@ _Pure Python, no dependencies, lightweight (200 LOC)._
 ## What does it do
 
 Wrappity allows you to access deeply nested dictionaries and combinations of `dicts` and `lists` using simple attribute 'dot' notation.
-It is especially useful when your input are volatile json structures where you can't enforce uniformity.
+It is especially useful when your input are volatile json structures that unexpectedly change case by case.
 
 Instead of...
 ```python
