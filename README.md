@@ -46,7 +46,13 @@ To learn more about why Wrappity was created and what use cases it's good for se
 
 ## Installation
 
-_coming soon_
+Install Wrappity with `pip` or `uv`:
+
+```bash
+pip install wrappity
+
+uv pip install wrappity
+```
 
 ## Usage
 
