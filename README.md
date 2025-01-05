@@ -1,7 +1,6 @@
 # Wrappity
 
-_Wrappity is a Python package for easier access to deeply nested dictionaries._
-
+_Wrappity is a Python package for easier access to deeply nested dictionaries._  
 _Pure Python, no dependencies, lightweight (200 LOC)._
 
 ## What does it do
@@ -54,16 +53,55 @@ pip install wrappity
 uv pip install wrappity
 ```
 
-## Usage
+## Basic usage
 
 There are 3 key functions in Wrappity:
 1. `wrap()` - takes an object and wraps it for easy access
 2. `unwrap()` - reverse function - give it a wrapped object and it gives you the original back
 2. `inspect()` - for introspection - gives you a list of all paths to all leaves in your object incl. their values
 
-### Wrap
+### Wrap, unwrap & the ._ notation
 
-### Unwrap
+Wrap any object to receive a wrapped version of it. Unwrap it to receive back the original.  
+With the wrapper, you can access members of the original object using the 'dot' notation:
+
+```python
+>>> from wrappity import wrap, unwrap
+>>> obj = {'foo': {'bar': 'baz'}}
+>>> wrapped_obj = wrap(obj)
+>>> wrapped_obj
+wrapped(<class 'dict'>): {'foo': wrapped(<class 'dict'>): {'bar': wrapped(<class 'str'>): baz}}
+>>> unwrap(wrapped_obj)
+{'foo': {'bar': 'baz'}}
+>>> assert unwrap(wrapped_obj) == obj
+>>>
+>>> print(wrapped_obj.foo.bar._)
+baz
+```
+
+Use the `_` attribute of the wrapped object to access the original element wrapped at that place:
+
+```python
+>>> wrapped_obj._
+{'foo': wrapped(<class 'dict'>): {'bar': wrapped(<class 'str'>): baz}}
+>>> wrapped_obj.foo._
+{'bar': wrapped(<class 'str'>): baz}
+>>> wrapped_obj.foo.bar._
+'baz'
+```
+
+If you try to access an element that does not exists, you get a wrapped object wrapping `None`, even if you go deeper into the void:
+
+```python
+>>> wrapped_obj.foo.hip # Note: hip was not in the original object
+wrapped(<class 'NoneType'>): None
+>>> print(wrapped_obj.foo.hip._)
+None
+>>> wrapped_obj.foo.hip.hap
+wrapped(<class 'NoneType'>): None
+>>> wrapped_obj.foo.hip.hap.hop
+wrapped(<class 'NoneType'>): None
+```
 
 ### Inspect
 
