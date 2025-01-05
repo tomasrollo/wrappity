@@ -20,7 +20,7 @@ wrapped_dict = wrappity.wrap(my_dict)
 value = wrapped_dict.foo[3].bar[5].baz.this_is_what_I_want._
 ```
 
-**Why bother?**
+### Why bother?
 
 Because if you want to properly account for errors, you might end up with something like:
 ```python
@@ -40,6 +40,61 @@ value = wrapped_dict.foo[3].bar[5].baz.this_is_what_I_want._ or "my default valu
 print(value)
 'my default value' # in case any of the foo, bar or baz are not there
 ```
+
+### Example use case
+
+Let's say you're processing employee data from your company's HR system and want to write a function that greets their kids.
+
+You look at some sample data on your input:
+
+```python
+>>> person1 = {'name':'John','surname':'Doe','age':40,'personal_details': {'kids':['Minnie','Moe'], 'wife':'Jane'},'address':{'street':'Rosemary Road 5','city':'Flower City','state':'Kansas'}}
+>>> person2 = {'name':'Jack','surname':'Doe','age':35,'personal_details': {'partner': 'Juan'},'address':{'street':'Dead end','city':'Forgotten City','state':'Oklahoma'}}
+```
+
+You notice that for people without kids, the `kids` list is missing in `personal_details` completely.  
+That's ok, with Wrappity you can implement your function as follows:
+
+```python
+>>> def greet_kids(person):
+...     for kid in wrap(person).personal_details.kids._ or []:
+...         print(f'Hi {kid}!')
+...
+>>> greet_kids(person1)
+Hi Minnie!
+Hi Moe!
+>>> greet_kids(person2)
+>>>
+```
+
+Next you need a function that greets their significant other. Some people have wifes, some have partners (and some might have none).
+With Wrappity that would be:
+
+```python
+>>> def greet_significant_other(person):
+...	    pd = wrap(person).personal_details
+...     significant_other = (pd.wife or pd.partner)._
+...     if significant_other:
+...         print(f'Greetings dear {significant_other}!')
+...
+>>> greet_significant_other(person1)
+Greetings dear Jane!
+>>> greet_significant_other(person2)
+Greetings dear Juan!
+>>>
+```
+
+But what if there's a new joiner to your company and HR colleagues have not yet added their personal details?  
+No worries, your functions will still work:
+
+```python
+>>> person3 = {'name':'Jill','surname':'Newjoiner'}
+>>> greet_kids(person3)
+>>> greet_significant_other(person3)
+>>>
+```
+
+You can find this example in full [here](examples/example1.py).
 
 To learn more about why Wrappity was created and what use cases it's good for see [here](docs/why.md).
 
