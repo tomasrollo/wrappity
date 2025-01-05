@@ -72,7 +72,7 @@ With Wrappity that would be:
 
 ```python
 >>> def greet_significant_other(person):
-...	    pd = wrap(person).personal_details
+...     pd = wrap(person).personal_details
 ...     significant_other = (pd.wife or pd.partner)._
 ...     if significant_other:
 ...         print(f'Greetings dear {significant_other}!')
