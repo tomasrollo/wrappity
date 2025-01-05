@@ -67,13 +67,15 @@ With the wrapper, you can access members of the original object using the 'dot' 
 
 ```python
 >>> from wrappity import wrap, unwrap
+>>>
 >>> obj = {'foo': {'bar': 'baz'}}
 >>> wrapped_obj = wrap(obj)
+>>>
 >>> wrapped_obj
 wrapped(<class 'dict'>): {'foo': wrapped(<class 'dict'>): {'bar': wrapped(<class 'str'>): baz}}
 >>> unwrap(wrapped_obj)
 {'foo': {'bar': 'baz'}}
->>> assert unwrap(wrapped_obj) == obj
+>>> assert unwrap(wrapped_obj) == obj # same thing
 >>>
 >>> print(wrapped_obj.foo.bar._)
 baz
@@ -90,7 +92,7 @@ Use the `_` attribute of the wrapped object to access the original element wrapp
 'baz'
 ```
 
-If you try to access an element that does not exists, you get a wrapped object wrapping `None`, even if you go deeper into the void:
+If you try to access an element that does not exist, you get a wrapped object wrapping `None`, even if you go deeper into the void:
 
 ```python
 >>> wrapped_obj.foo.hip # Note: hip was not in the original object
@@ -104,6 +106,25 @@ wrapped(<class 'NoneType'>): None
 ```
 
 ### Inspect
+
+The `inspect()` function gives you all paths that exist in a wrapped object, incl. the values of the final leaves. This is esp. useful when you want to interactively examine a complex structure:
+
+```python
+>>> from wrappity import inspect
+>>>
+>>> person = {'name':'John','surname':'Doe','age':40,'kids':['Minnie','Moe'],'address':{'street':'Rosemary Road 5','city':'Flower City','state':'Kansas'}}
+>>> print('\n'.join(
+...     inspect(wrap(person))
+... ))
+name=John
+surname=Doe
+age=40
+kids[0]=Minnie
+kids[1]=Moe
+address.street=Rosemary Road 5
+address.city=Flower City
+address.state=Kansas
+```
 
 ## Where can I learn more?
 
