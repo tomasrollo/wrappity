@@ -90,12 +90,12 @@ def wrap(object_: Any, attr_translations: dict = {}, missed_access_hook: Callabl
 	"""Wraps an object in a Wrapper instance, proceeding recursively if necessary
 
 	Args:
-			object_ (Any): the object to wrap
-			attr_translations (dict, optional): Any attribute name translations required to access subobjects which have names that are not valid names in Python.
-			missed_access_hook (Callable, optional): An optional function that gets called when there's a attempt to access a subobject that does not exist.
+					object_ (Any): the object to wrap
+					attr_translations (dict, optional): Any attribute name translations required to access subobjects which have names that are not valid names in Python.
+					missed_access_hook (Callable, optional): An optional function that gets called when there's a attempt to access a subobject that does not exist.
 
 	Returns:
-			Wrapper: the original object wrapped in a Wrapper instance
+					Wrapper: the original object wrapped in a Wrapper instance
 	"""
 	if type(object_) == dict:
 		return Wrapper(
@@ -124,10 +124,10 @@ def unwrap(object_: Wrapper) -> Any:
 	"""Unwraps a previously wrapped object, proceeding recursively if necessary
 
 	Args:
-			object_ (Wrapper): the wrapped object to unwrap
+					object_ (Wrapper): the wrapped object to unwrap
 
 	Returns:
-			Any: the unwrapped object
+					Any: the unwrapped object
 	"""
 	if type(object_) != Wrapper:
 		return object_  # nothing to unwrap
@@ -139,15 +139,17 @@ def unwrap(object_: Wrapper) -> Any:
 		return object_._wrapped_object
 
 
-def inspect(object_: Wrapper) -> list[str]:
+def inspect(object_: Wrapper, show_values: bool = True) -> list[str]:
 	"""Inspects the wrapped object (recursively if needed) and returns a list of paths to all leaf nodes
 
 	Args:
-		object_ (Wrapper): a wrapped object
+			object_ (Wrapper): a wrapped object
+			show_values (bool, optional): whether to include the leaf values in the paths
 
 	Returns:
-		list[str]: list of paths to all leaf nodes
+			list[str]: list of paths to all leaf nodes
 	"""
+
 	def find_paths(object_, current_path=None):
 		if current_path is None:
 			current_path = []
@@ -162,4 +164,7 @@ def inspect(object_: Wrapper) -> list[str]:
 		else:
 			yield current_path + [object_]
 
-	return [(".".join(map(str, path[:-1]))).replace(".[", "[") + f"={path[-1]}" for path in find_paths(object_)]
+	return [
+		(".".join(map(str, path[:-1]))).replace(".[", "[") + (f"={path[-1]}" if show_values else "")
+		for path in find_paths(object_)
+	]
