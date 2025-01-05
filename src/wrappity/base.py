@@ -9,7 +9,6 @@ class Wrapper(object):
 		self, object_: Any = None, attr_translations: dict | None = None, missed_access_hook: Callable = None
 	):
 		self._wrapped_object = object_
-		self._wrapped_type = type(object_)
 		self._attr_translations = attr_translations or {}
 		self._missed_access_hook = missed_access_hook
 
@@ -17,9 +16,8 @@ class Wrapper(object):
 		return Wrapper(object_, attr_translations=self._attr_translations, missed_access_hook=self._missed_access_hook)
 
 	def _ensure_list(self):
-		if self._wrapped_type != list:
+		if not isinstance(self._wrapped_object,list):
 			self._wrapped_object = [self.__create_new__(self._wrapped_object)]
-			self._wrapped_type = list
 		return self
 
 	def _el(self):
@@ -35,7 +33,7 @@ class Wrapper(object):
 				if attr_name.startswith(translation_key):
 					attr_name = attr_name.replace(translation_key, translation_value)
 					break
-		if self._wrapped_type == dict:
+		if isinstance(self._wrapped_object,dict):
 			if attr_name in self._wrapped_object:
 				return self._wrapped_object.get(attr_name)
 			else:
@@ -48,7 +46,7 @@ class Wrapper(object):
 		return self.__create_new__()
 
 	def __getitem__(self, index):
-		if self._wrapped_type == list:
+		if isinstance(self._wrapped_object,list):
 			if index < len(self._wrapped_object):
 				return self._wrapped_object[index]
 			else:
@@ -64,23 +62,23 @@ class Wrapper(object):
 		return False if self._wrapped_object is None else bool(self._wrapped_object)
 
 	def __iter__(self):
-		if self._wrapped_type in (list, tuple, dict):
+		if isinstance(self._wrapped_object,list) or isinstance(self._wrapped_object,tuple) or isinstance(self._wrapped_object,dict):
 			yield from self._wrapped_object
 
 	def __len__(self):
-		return len(self._wrapped_object) if self._wrapped_type in (list, tuple, dict) else 0
+		return len(self._wrapped_object) if isinstance(self._wrapped_object,list) or isinstance(self._wrapped_object,tuple) or isinstance(self._wrapped_object,dict) else 0
 
 	def items(self):
-		return self._wrapped_object.items() if self._wrapped_type in (list, tuple, dict) else []
+		return self._wrapped_object.items() if isinstance(self._wrapped_object,list) or isinstance(self._wrapped_object,tuple) or isinstance(self._wrapped_object,dict) else []
 
 	def values(self):
-		return self._wrapped_object.values() if self._wrapped_type in (list, tuple, dict) else []
+		return self._wrapped_object.values() if isinstance(self._wrapped_object,list) or isinstance(self._wrapped_object,tuple) or isinstance(self._wrapped_object,dict) else []
 
 	def keys(self):
-		return self._wrapped_object.keys() if self._wrapped_type in (list, tuple, dict) else []
+		return self._wrapped_object.keys() if isinstance(self._wrapped_object,list) or isinstance(self._wrapped_object,tuple) or isinstance(self._wrapped_object,dict) else []
 
 	def __repr__(self):
-		return f"wrapped({self._wrapped_type}): {self._wrapped_object}"
+		return f"wrapped({type(self._wrapped_object)}): {self._wrapped_object}"
 
 	def __str__(self):
 		return str(self._wrapped_object) if self._wrapped_object is not None else ""
@@ -97,7 +95,7 @@ def wrap(object_: Any, attr_translations: dict = {}, missed_access_hook: Callabl
 	Returns:
 					Wrapper: the original object wrapped in a Wrapper instance
 	"""
-	if type(object_) == dict:
+	if isinstance(object_,dict):
 		return Wrapper(
 			{
 				k: wrap(v, attr_translations=attr_translations, missed_access_hook=missed_access_hook)
@@ -106,7 +104,7 @@ def wrap(object_: Any, attr_translations: dict = {}, missed_access_hook: Callabl
 			attr_translations=attr_translations,
 			missed_access_hook=missed_access_hook,
 		)
-	elif type(object_) in (list, tuple):
+	elif isinstance(object_,list) or isinstance(object_,tuple):
 		return Wrapper(
 			[wrap(i, attr_translations=attr_translations, missed_access_hook=missed_access_hook) for i in object_],
 			attr_translations=attr_translations,
@@ -131,9 +129,9 @@ def unwrap(object_: Wrapper) -> Any:
 	"""
 	if type(object_) != Wrapper:
 		return object_  # nothing to unwrap
-	if type(object_._wrapped_object) == dict:
+	if isinstance(object_._wrapped_object,dict):
 		return {k: unwrap(v) for k, v in object_._wrapped_object.items()}
-	elif type(object_._wrapped_object) in (list, tuple):
+	elif isinstance(object_._wrapped_object,list) or isinstance(object_._wrapped_object,tuple):
 		return [unwrap(i) for i in object_._wrapped_object]
 	else:
 		return object_._wrapped_object
@@ -155,10 +153,10 @@ def inspect(object_: Wrapper, show_values: bool = True) -> list[str]:
 			current_path = []
 		if type(object_) != Wrapper:  # Leaf node
 			yield current_path + [object_]
-		elif object_._wrapped_type == dict:
+		elif isinstance(object_._wrapped_object,dict):
 			for key, value in object_._wrapped_object.items():
 				yield from find_paths(value, current_path + [key])
-		elif object_._wrapped_type in (list, tuple):
+		elif isinstance(object_._wrapped_object,list) or isinstance(object_._wrapped_object,tuple):
 			for index, value in enumerate(object_._wrapped_object):
 				yield from find_paths(value, current_path + [f"[{index}]"])
 		else:
