@@ -17,7 +17,11 @@ class Wrapper(object):
 
 	def _ensure_list(self):
 		if not isinstance(self._wrapped_object,list):
-			self._wrapped_object = [self.__create_new__(self._wrapped_object)]
+			# ensure we're not unnecessarily filling the list with None
+			if self._wrapped_object is None:
+				self._wrapped_object = []
+			else:
+				self._wrapped_object = [self.__create_new__(self._wrapped_object)]
 		return self
 
 	def _el(self):
