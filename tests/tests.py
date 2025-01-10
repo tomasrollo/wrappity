@@ -51,3 +51,7 @@ def test_inspect_show_values_false():
 	# test inspecting with show_values=False
 	paths = inspect(wrapped_obj, show_values=False)
 	assert paths == ["a", "b[0]", "b[1]", "b[2]", "c.d"]
+
+def test_ensure_list_on_none():
+	# test _ensure_list on None
+	assert wrapped_obj.e._el()._ == []
