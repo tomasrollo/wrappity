@@ -52,6 +52,20 @@ def test_inspect_show_values_false():
 	paths = inspect(wrapped_obj, show_values=False)
 	assert paths == ["a", "b[0]", "b[1]", "b[2]", "c.d"]
 
+
 def test_ensure_list_on_none():
 	# test _ensure_list on None
 	assert wrapped_obj.e._el()._ == []
+
+
+def test_ensure_list_on_existing_list():
+    # test _ensure_list on existing list returns the same list
+    wrapped_obj.b._el()
+    assert isinstance(wrapped_obj.b._, list)
+    assert wrapped_obj.b._ == [1, 2, 3]
+
+
+def test_underscore_unwraps_nested_structure():
+    # test underscore unwraps nested structure
+    assert type(wrapped_obj.c._['d']) is int
+    assert wrapped_obj.c._['d'] == 4

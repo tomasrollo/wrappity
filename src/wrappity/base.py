@@ -30,7 +30,7 @@ class Wrapper(object):
 
 	def __getattr__(self, attr_name):
 		if attr_name == "_":
-			return self._wrapped_object
+			return unwrap(self)
 		if attr_name.startswith("_") and len(attr_name) > 2 and attr_name[1] != "_":  # apply translations if necessary
 			attr_name = attr_name[1:]
 			for translation_key, translation_value in self._attr_translations.items():
