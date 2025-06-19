@@ -170,3 +170,13 @@ def inspect(object_: Wrapper, show_values: bool = True) -> list[str]:
 		(".".join(map(str, path[:-1]))).replace(".[", "[") + (f"={path[-1]}" if show_values else "")
 		for path in find_paths(object_)
 	]
+
+def print_inspect(object_: Wrapper, show_values: bool = True):
+    """Prints the paths to all leaf nodes of the wrapped object
+
+    Args:
+            object_ (Wrapper): a wrapped object
+            show_values (bool, optional): whether to include the leaf values in the paths
+    """
+    for path in inspect(object_, show_values=show_values):
+        print(path)
