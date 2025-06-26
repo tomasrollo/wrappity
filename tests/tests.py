@@ -153,3 +153,31 @@ def test_unwrap_non_wrapper():
     # test unwrap on non-wrapper
     assert unwrap(123) == 123
     assert unwrap("hello") == "hello"
+
+
+def test_inspect_show_types_true():
+    # test inspecting with show_types=True
+    paths = inspect(wrapped_obj, show_types=True)
+    assert paths == [
+        "a=1 (<class 'int'>)",
+        "b[0]=1 (<class 'int'>)",
+        "b[1]=2 (<class 'int'>)",
+        "b[2]=3 (<class 'int'>)",
+        "c.d=4 (<class 'int'>)",
+    ]
+
+
+def test_inspect_filter_by_regex():
+    # test inspecting with filter_by regex
+    paths = inspect(wrapped_obj, filter_by=r"b\[\d\]")
+    assert paths == ["b[0]=1", "b[1]=2", "b[2]=3"]
+
+
+def test_inspect_show_types_and_filter_by():
+    # test inspecting with show_types=True and filter_by regex
+    paths = inspect(wrapped_obj, show_types=True, filter_by=r"b\[\d\]")
+    assert paths == [
+        "b[0]=1 (<class 'int'>)",
+        "b[1]=2 (<class 'int'>)",
+        "b[2]=3 (<class 'int'>)",
+    ]
