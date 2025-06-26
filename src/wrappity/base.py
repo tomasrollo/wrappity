@@ -141,12 +141,16 @@ def unwrap(object_: Wrapper) -> Any:
 		return object_._wrapped_object
 
 
-def inspect(object_: Wrapper, show_values: bool = True) -> list[str]:
+def inspect(
+	object_: Wrapper, show_values: bool = True, show_types: bool = False, filter_by: str = None
+) -> list[str]:
 	"""Inspects the wrapped object (recursively if needed) and returns a list of paths to all leaf nodes
 
 	Args:
 			object_ (Wrapper): a wrapped object
 			show_values (bool, optional): whether to include the leaf values in the paths
+			show_types (bool, optional): whether to include the data type of the leaf values
+			filter_by (str, optional): a regex to filter the paths
 
 	Returns:
 			list[str]: list of paths to all leaf nodes
@@ -166,17 +170,35 @@ def inspect(object_: Wrapper, show_values: bool = True) -> list[str]:
 		else:
 			yield current_path + [object_]
 
-	return [
-		(".".join(map(str, path[:-1]))).replace(".[", "[") + (f"={path[-1]}" if show_values else "")
-		for path in find_paths(object_)
-	]
+	result = []
+	for path in find_paths(object_):
+		path_str = (".".join(map(str, path[:-1]))).replace(".[", "[")
+		if show_values:
+			path_str += f"={path[-1]}"
+		if show_types:
+			path_str += f" ({type(unwrap(path[-1]))})"
+		result.append(path_str)
 
-def print_inspect(object_: Wrapper, show_values: bool = True):
-    """Prints the paths to all leaf nodes of the wrapped object
+	if filter_by:
+		import re
 
-    Args:
-            object_ (Wrapper): a wrapped object
-            show_values (bool, optional): whether to include the leaf values in the paths
-    """
-    for path in inspect(object_, show_values=show_values):
-        print(path)
+		result = [p for p in result if re.search(filter_by, p)]
+
+	return result
+
+
+def print_inspect(
+	object_: Wrapper, show_values: bool = True, show_types: bool = False, filter_by: str = None
+):
+	"""Prints the paths to all leaf nodes of the wrapped object
+
+	Args:
+			object_ (Wrapper): a wrapped object
+			show_values (bool, optional): whether to include the leaf values in the paths
+			show_types (bool, optional): whether to include the data type of the leaf values
+			filter_by (str, optional): a regex to filter the paths
+	"""
+	for path in inspect(
+		object_, show_values=show_values, show_types=show_types, filter_by=filter_by
+	):
+		print(path)
