@@ -20,13 +20,13 @@ unwrap(wrapped_obj1) == unwrap(wrapped_obj2)
 wrapped_obj1 == wrapped_obj2
 ```
 
-## 4. Expanded `inspect()` Functionality
+## 4. Expanded `inspect()` Functionality - ✅ implemented
 The `inspect()` function is great for debugging. It could be made even more powerful by adding:
 *   **Filtering**: Allow the user to filter the paths based on a regular expression or a filter function.
 *   **Value Types**: Add an option to show the data type of the leaf values.
 
-## 5. Comprehensive Testing
+## 5. Comprehensive Testing - ✅ implemented
 I noticed that the `tests/tests.py` file is currently empty. Building a comprehensive test suite using a framework like `pytest` would be the most critical improvement. It would ensure the library's reliability, prevent regressions, and give you more confidence when adding new features.
 
-## 6. Complete the Documentation
+## 6. Complete the Documentation - ✅ implemented
 The `docs/guide.md` file has a good structure, but the sections are empty. Filling these sections with detailed explanations and code examples for each feature would be very helpful for new users. A "Quickstart" guide in the `README.md` would also be a great addition.
